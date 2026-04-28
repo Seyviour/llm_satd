@@ -1,0 +1,2 @@
+pair_id,comparison_type,left_model,right_model,cohen_kappa,gwet_ac1,observed_agreement,expected_agreement,n_items,left_positive_rate,right_positive_rate,tp,tn,fp,fn,precision,recall,accuracy
+gpt4o_vs_annotator1,model_human,gpt4o,annotator1,0.60,0.70,0.83,0.57,369,0.70,0.68,223,83,35,28,0.86,0.89,0.83

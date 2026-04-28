@@ -1,0 +1,13 @@
+LLMChain
+SequentialChain
+ConversationChain
+APIChain
+GraphQAChain
+RetrievalQA
+AIMessage|HumanMessage|ChatPromptTemplate|PromptTemplate|FewShotPromptTemplate|StringPromptTemplate|AIMessagePromptTemplate|HumanMessagePromptTemplate|SystemMessagePromptTemplate)\s*\(",
+        r"\b(ChatOpenAI|ChatAnthropic|ChatMistralAI|ChatGoogleGenerativeAI|ChatOllama|Ollama|ChatCohere)\s*\(",
+        # Method Calls
+        r"\.\s*(invoke|ainvoke|batch|abatch|stream|astream|astream_log|transform_documents|embed_documents|embed_query)\s*\(",
+        r"\.\s*(run|arun|predict|apredict|call|acall|apply|map|aplan|plan|save|load|with_fallbacks|with_retry|with_config)\s*\(",
+        r"\|\s*(?:Runnable|ChatPromptTemplate|PromptTemplate|StrOutputParser|BaseOutputParser|LLMChain|BaseRetriever|OutputParser)",
+        r"load_prompt\s*\(",

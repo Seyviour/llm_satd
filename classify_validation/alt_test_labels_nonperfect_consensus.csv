@@ -1,0 +1,500 @@
+full_name,status,id_in_repo,file_path,comment,context_at_introduction,sample_origin,annotation_sample_id,gpt4o_is_llm_satd,annotator1_is_llm_satd,annotator2_is_llm_satd,annotator3_is_llm_satd,annotator_votes,positive_votes,majority_label,all_three_agree
+melih-unsal/DemoGPT,DELETED,1949,src/data_beta/examples/codes/summarization.py,# This sections shows results of using the stuff Chain to do summarization.,"from langchain.chains.summarize import load_summarize_chain
+
+chain = load_summarize_chain(llm, chain_type=""map_reduce"")
+chain.run(docs)
+
+# ' In response to Russian aggression in Ukraine, the United States and its allies are taking action to hold Putin accountable, including economic sanctions, asset seizures, and military assistance. The US is also providing economic and humanitarian aid to Ukraine, and has passed the American Rescue Plan and the Bipartisan Infrastructure Law to help struggling families and create jobs. The US remains unified and determined to protect Ukraine and the free world.'
+
+# If you want more control and understanding over what is happening, please see the information below.
+
+# The stuff Chain
+# This sections shows results of using the stuff Chain to do summarization.
+
+chain = load_summarize_chain(llm, chain_type=""stuff"")
+
+chain.run(docs)
+
+# ' In his speech, President Biden addressed the crisis in Ukraine, the American Rescue Plan, and the Bipartisan Infrastructure Law. He discussed the need to invest in America, educate Americans, and build the economy from the bottom up. He also announced the release of 60 million barrels of oil from reserves around the world, and the creation of a dedicated task force to go after the crimes of Russian oligarchs. He concluded by emphasizing the need to Buy American and use taxpayer dollars to rebuild America.'
+
+# Custom Prompts
+
+# You can also use your own prompts with this chain. In this example, we will respond in Italian.",existing,64,False,False,True,False,False/True/False,1,False,False
+Tongjilibo/bert4torch,DELETED,1092,bert4torch/pipelines/chat/openai_api.py,# TODO:,"
+    model_path = ""E:/pretrain_ckpt/glm/chatglm2-6B""
+    generation_config  = {'mode':'random_sample',
+                        'max_length':2048, 
+                        'default_rtype':'logits', 
+                        'use_states':True
+                        }
+    chat = ChatGlm2OpenaiApi(model_path, **generation_config)
+    chat.run()
+
+    # TODO:
+    1. 在后续调用服务，模型从cpu转到cuda上时，内存不下降，猜测是因为不同线程中操作导致的
+    2. 偶然会发生调用的时候，主线程和定时线程打架，导致device不一致的错误
+    3. 如何offload到disk上，不占用内存和显存
+    """"""
+    def __init__(self, model_path, name='default', route_api='/chat/completions', route_models='/models', 
+                 max_callapi_interval=24*3600, scheduler_interval=10*60, offload_when_nocall:Literal['cpu', 'disk']=None, **kwargs):
+        self.offload_when_nocall = offload_when_nocall
+        if offload_when_nocall is not None:
+            kwargs['create_model_at_startup'] = False
+        super().__init__(model_path, **kwargs)",existing,89,True,True,False,True,True/False/True,2,True,False
+microsoft/promptflow,DELETED,2481,src/promptflow-core/tests/conftest.py,# TODO(3128519): Remove this after the connection type is added to github secrets,"
+@pytest.fixture
+def dev_connections() -> dict:
+    with open(CONNECTION_FILE, ""r"") as f:
+        return json.load(f)
+
+
+@pytest.fixture
+def mock_dict_azure_open_ai_connection(dev_connections):
+    connection = dev_connections[""azure_open_ai_connection""]
+    # TODO(3128519): Remove this after the connection type is added to github secrets
+    if ""type"" not in connection:
+        connection[""type""] = ""AzureOpenAIConnection""
+
+    with patch(
+        ""promptflow.connections.ConnectionProvider.get_instance"",
+        return_value=DictConnectionProvider({""azure_open_ai_connection"": connection}),
+    ):
+        yield",existing,14,True,True,False,False,True/False/False,1,False,False
+blob42/Instrukt,ACTIVE,406,instrukt/app.py,# TODO: add auto restart logic ?,"            if self.active_agent.realm is not None:
+                self.active_agent.realm.stop_session()
+        # save command history
+        try:
+            self.query_one(REPLPrompt).cmd_history.save()
+        except NoMatches:
+            pass
+        self.exit()
+
+
+# TODO: add auto restart logic ?
+def run():
+    """"""run script entry""""""
+    app = InstruktApp()
+    app.run()
+
+
+if __name__ == ""__main__"":
+    run()",existing,47,False,False,True,True,False/True/True,2,True,False
+livekit/agents,DELETED,769,examples/voice-assistant/minimal_assistant.py,# TODO: this can be removed in the next version,"        messages=[
+            ChatMessage(
+                role=ChatRole.SYSTEM,
+                text=""You are a voice assistant created by LiveKit. Your interface with users will be voice. You should use short and concise responses, and avoiding usage of unpronouncable punctuation."",
+            )
+        ]
+    )
+
+    # Since OpenAI does not support streaming TTS, we'll use it with a StreamAdapter
+    # to make it compatible with the VoiceAssistant
+    # TODO: this can be removed in the next version
+    openai_tts = tts.StreamAdapter(
+        tts=openai.TTS(voice=""alloy""),
+        sentence_tokenizer=tokenize.basic.SentenceTokenizer(),
+    )
+
+    assistant = VoiceAssistant(
+        vad=silero.VAD(),
+        stt=deepgram.STT(),
+        llm=openai.LLM(),
+        tts=openai_tts,",existing,11,True,True,False,True,True/False/True,2,True,False
+letta-ai/letta,ACTIVE,1138,letta/agents/letta_agent.py,# TODO: THIS IS INCREDIBLY UGLY,"
+        for step in range(max_steps):
+            stream = await self._get_ai_reply(
+                llm_client=llm_client,
+                in_context_messages=current_in_context_messages + new_in_context_messages,
+                agent_state=agent_state,
+                tool_rules_solver=tool_rules_solver,
+                stream=True,
+            )
+
+            # TODO: THIS IS INCREDIBLY UGLY
+            # TODO: THERE ARE MULTIPLE COPIES OF THE LLM_CONFIG EVERYWHERE THAT ARE GETTING MANIPULATED
+            interface = AnthropicStreamingInterface(
+                use_assistant_message=use_assistant_message, put_inner_thoughts_in_kwarg=llm_client.llm_config.put_inner_thoughts_in_kwargs
+            )
+            async for chunk in interface.process(stream):
+                yield f""data: {chunk.model_dump_json()}\n\n""
+
+            # Process resulting stream content
+            tool_call = interface.get_tool_call_object()
+            reasoning_content = interface.get_reasoning_content()",existing,15,True,True,False,False,True/False/False,1,False,False
+QuivrHQ/quivr,DELETED,124,backend/routes/crawl_routes.py,# [TODO] rate limiting of user for crawl,"    enable_summarization: bool = False,
+    current_user: UserIdentity = Depends(get_current_user),
+):
+    """"""
+    Crawl a website and process the crawled data.
+    """"""
+
+    # [TODO] check if the user is the owner/editor of the brain
+    brain = Brain(id=brain_id)
+
+    # [TODO] rate limiting of user for crawl
+    if request.headers.get(""Openai-Api-Key""):
+        brain.max_brain_size = int(os.getenv(""MAX_BRAIN_SIZE_WITH_KEY"", 209715200))
+
+    file_size = 1000000
+    remaining_free_space = brain.remaining_brain_size
+
+    if remaining_free_space - file_size < 0:
+        message = {
+            ""message"": f""❌ UserIdentity's brain will exceed maximum capacity with this upload. Maximum file allowed is : {convert_bytes(remaining_free_space)}"",
+            ""type"": ""error"",",existing,7,False,True,False,False,True/False/False,1,False,False
+superduper-io/superduper,DELETED,862,superduperdb/base/datalayer.py,# TODO could be handled exclusively by `_Predictor.predict`,"                ),
+            )
+            model = vi.indexing_listener.model.identifier
+            key = vi.indexing_listener.key
+            G.add_edge(
+                f'{model}.predict({key})', f'{identifier}.{copy_vectors.__name__}'
+            )
+
+        return G
+
+    # TODO could be handled exclusively by `_Predictor.predict`
+    def _compute_model_outputs(
+        self,
+        model_info,
+        _ids,
+        select: Select,
+        key='_base',
+        model=None,
+        predict_kwargs=None,
+    ):
+        s.logging.info('finding documents under filter')",existing,12,False,False,True,False,False/True/False,1,False,False
+ghost-in-moss/GhostOS,DELETED,3853,ghostos/framework/llms/openai_driver.py,# todo: move to lite_llm_driver. shall not locate here at very first.,"        for message in parsed:
+            # filter all the system message to __system__ user message.
+            if count > 0 and ""role"" in message and message[""role""] == Role.SYSTEM.value:
+                message[""role""] = Role.USER.value
+                message[""name""] = ""__system__""
+            outputs.append(message)
+            count += 1
+        return outputs
+
+
+# todo: move to lite_llm_driver. shall not locate here at very first.
+class LiteLLMDriver(OpenAIDriver):
+
+    def driver_name(self) -> str:
+        return LITELLM_DRIVER_NAME
+
+    def new(self, service: ServiceConf, model: ModelConf, api_name: str = """") -> LLMApi:
+        return LitellmAdapter(service, model, self._parser, self._storage, self._logger, api_name=api_name)
+
+
+class DeepseekAdapter(OpenAIAdapter):",existing,24,True,True,False,False,True/False/False,1,False,False
+djpapzin/LangChain-VectorDB-Learning,DELETED,161,Projects/29. Customer_Support_Question_Answering_Chatbot.py,"# TODO: use your organization id here. (by default, org id is your username)","
+# we split the documents into smaller chunks
+text_splitter = CharacterTextSplitter(chunk_size=1500, chunk_overlap=0)
+docs = text_splitter.split_documents(docs_not_splitted)
+
+# Before executing the following code, make sure to have
+# your OpenAI key saved in the “OPENAI_API_KEY” environment variable.
+embeddings = OpenAIEmbeddings(model=""text-embedding-ada-002"")
+
+# create Deep Lake dataset
+# TODO: use your organization id here. (by default, org id is your username)
+my_activeloop_org_id = ""langchain_course_deeplake""
+my_activeloop_dataset_name = ""langchain_course_customer_support""
+dataset_path = f""hub://{my_activeloop_org_id}/{my_activeloop_dataset_name}""
+db = DeepLake(dataset_path=dataset_path, embedding_function=embeddings)
+
+# add documents to our Deep Lake dataset
+db.add_documents(docs)
+
+# let's see the top relevant documents to a specific query
+query = ""how to check disk usage in linux?""",existing,29,True,True,False,False,True/False/False,1,False,False
+mbanon/fastspell,DELETED,14,fastspell/FastSpell.py,#TODO: Confidence score?,"                    self.tokenizers[l] = MosesTokenizer(l)    
+                
+
+
+    def getlang(self, sent):
+        sent=sent.strip()
+        prediction = self.model.predict(sent, k=1)[0][0][len(self.prefix):]
+        #classic norwegian ñapa
+        if prediction == ""no"":
+            prediction = ""nb""
+        #TODO: Confidence score?
+
+        if self.similar == None or prediction not in self.similar:
+        #Non mistakeable language: just return FastText prediction
+            return(prediction)
+        else:
+        #The target language is mistakeable
+            spellchecked = {}
+            for l in self.hunspell_objs:
+                #Get spellchecking for all the mistakeable languages
+                logging.debug(l)",existing,41,True,False,True,False,False/True/False,1,False,False
+yhzhu99/MedAgentBoard,DELETED,36,src/graph.py,# TODO 将用户需求转化为更易于llm理解的形式(user_request->code_request),"os.environ[""OPENAI_API_KEY""] = ""sk-2Cd64920f5df1880606c597a75f9f05009d2d9222a4Jur6C""
+from langchain.chat_models import ChatOpenAI
+llm = ChatOpenAI(model='gpt-3.5-turbo')
+judge_agent = create_react_agent(
+    llm,
+    tools=[],
+)
+
+def judge_code_need(state: GlobalState):
+    # TODO 怎么让大模型知道数据情况？（用户是如何输入数据的？（提交任意文件？llm是否需要反馈））
+    # TODO 将用户需求转化为更易于llm理解的形式(user_request->code_request)
+    prompt_input = ""请严格按照下面的要求操作：\n1.阅读用户需求，判断是否需要生成一段python代码用于辅助解决问题；\n2.你只能返回一个单词：'Yes'或'No'，'Yes'代表需要生成代码，'No'代表不需要生成代码。\n\n用户需求：{}\n\n其中，用户提供了一份EHR数据，数据的前5000个字符如下：{}"".format(state['user_request'], state['code_data'].to_string(max_rows=None, max_cols=None, max_colwidth=None)[:5000])
+    result = judge_agent.invoke({""messages"": [(""user"", prompt_input)]})
+    response = result[""messages""][-1].content
+    print('\n\n\n\nresponse:', response)    # TODO 如果response不是yes或no的处理
+    
+    return Command(
+        update = {
+            ""need_code"": response
+        },
+    )",existing,72,True,True,False,True,True/False/True,2,True,False
+QuivrHQ/quivr,DELETED,1115,backend/core/quivr_core/brain/brain.py,# TODO: List of files,"                llm = LLMEndpoint.from_config(config=rag_config.llm_config)
+        else:
+            rag_config = RAGConfig(llm_config=self.llm.get_config())
+
+        rag_pipeline = QuivrQARAG(
+            rag_config=rag_config, llm=llm, vector_store=self.vector_db
+        )
+
+        chat_history = self.default_chat
+
+        # TODO: List of files
+        full_answer = """"
+        async for response in rag_pipeline.answer_astream(question, chat_history, []):
+            # Format output to be correct servicedf;j
+            if not response.last_chunk:
+                yield response
+            full_answer += response.answer
+
+        # TODO : add sources, metdata etc  ...
+        chat_history.append(HumanMessage(content=question))
+        chat_history.append(AIMessage(content=full_answer))",existing,39,True,True,True,False,True/True/False,2,True,False
+BenderV/autochat,ACTIVE,0,examples/demo_label.py,# TODO: Implement function,"import json
+import sys
+
+sys.path.append("".."")
+
+from autochat import ChatGPT, Message
+
+
+def label_item(category: str, from_response: Message):
+    # TODO: Implement function
+    raise NotImplementedError()
+
+
+with open(""./function_label.json"") as f:
+    FUNCTION_LABEL_ITEM = json.load(f)
+
+classifierGPT = ChatGPT.from_template(""./classify_template.txt"")
+classifierGPT.add_function(label_item, FUNCTION_LABEL_ITEM)
+
+text = ""The new iPhone is out""",existing,99,True,False,True,True,False/True/True,2,True,False
+superduper-io/superduper,DELETED,2983,test/unittest/component/test_component.py,# TODO needed?,"            identifier=""model1"",
+            object=lambda x: x + 2,
+        ),
+        key=""x"",
+        select=db[""docs""].select(),
+    )
+
+    db.apply(m)
+
+
+# TODO needed?
+def test_set_db_deep(db):
+    c1 = UpstreamComponent(identifier='c1')
+    m = MyListener(
+        identifier='l1',
+        upstream=[c1],
+        model=ObjectModel(
+            identifier=""model1"",
+            object=lambda x: x + 2,
+        ),
+        key=""x"",",existing,54,False,False,True,False,False/True/False,1,False,False
+PathOnAIOrg/LiteMultiAgent,DELETED,6722,framework/langgraph/langchain/libs/core/langchain_core/prompts/string.py,# TODO: handle partials,"        """"""Get the namespace of the langchain object.""""""
+        return [""langchain"", ""prompts"", ""base""]
+
+    def format_prompt(self, **kwargs: Any) -> PromptValue:
+        return StringPromptValue(text=self.format(**kwargs))
+
+    async def aformat_prompt(self, **kwargs: Any) -> PromptValue:
+        return StringPromptValue(text=await self.aformat(**kwargs))
+
+    def pretty_repr(self, html: bool = False) -> str:
+        # TODO: handle partials
+        dummy_vars = {
+            input_var: ""{"" + f""{input_var}"" + ""}"" for input_var in self.input_variables
+        }
+        if html:
+            dummy_vars = {
+                k: get_colored_text(v, ""yellow"") for k, v in dummy_vars.items()
+            }
+        return self.format(**dummy_vars)
+
+    def pretty_print(self) -> None:",existing,26,True,False,False,True,False/False/True,1,False,False
+saharmor/simulatedev,DELETED,7,bug_hunter.py,"# Todo handle any prompts like ""Trust this workspace"" in Windsurf","            '''
+            subprocess.run([""osascript"", ""-e"", activate_script], check=True)
+            time.sleep(1)  # slight extra delay
+            
+            # Confirm the new instance is focused using your wait_for_focus utility
+            if wait_for_focus:
+                is_focused_and_opened = wait_for_focus(window_name)            
+                if not is_focused_and_opened:
+                    raise Exception(""IDE did not open or focus"")
+                
+            # Todo handle any prompts like ""Trust this workspace"" in Windsurf
+            if ide_name.lower() == ""windsurf"":
+                result = await self.claude.get_coordinates_from_claude(""Trust this workspace"")
+                if result:
+                    pyautogui.moveTo(result.coordinates.x, result.coordinates.y)
+                    pyautogui.click(result.coordinates.x, result.coordinates.y) 
+        except subprocess.CalledProcessError as e:
+            print(f""Warning: Could not set window to full screen: {str(e)}"")
+            subprocess.run([""open"", ""-na"", window_name, project_path])
+            time.sleep(5)
+",existing,84,True,True,True,False,True/True/False,2,True,False
+reasonmethis/docdocgo-core,ACTIVE,662,utils/docgrab.py,"# TODO: remove the logic of saving to the db, leave only doc preparation. We should","
+    # Restore original metadata
+    for metadata in metadatas:
+        del metadata[""parent_id""]
+
+    return snippets
+
+
+FAKE_FULL_DOC_EMBEDDING = [1.0] * EMBEDDINGS_DIMENSIONS
+
+# TODO: remove the logic of saving to the db, leave only doc preparation. We should 
+# separate concerns and reduce the number of places we write to the db.
+def ingest_into_chroma(
+    docs: list[Document],
+    *,
+    collection_name: str,
+    openai_api_key: str,
+    chroma_client: ClientAPI | None = None,
+    save_dir: str | None = None,
+    collection_metadata: dict[str, str] | None = None,
+) -> ChromaDDG:",existing,25,False,False,True,True,False/True/True,2,True,False
+MLSysOps/MLE-agent,DELETED,50,agent/function/plan_agent.py,# TODO: add supports for other kind of tasks.,"                    self.console.log("":tada: Looks like all tasks are completed."")
+                    return
+
+                # install the dependencies for this plan.
+                setup_agent = SetupAgent(self.agent, self.plan)
+                setup_agent.invoke()
+
+                for task in self.plan.tasks:
+                    if self.plan.current_task < task_num:
+                        self.console.log(f""Working on task: {task.name} ({self.plan.current_task + 1}/{task_num})"")
+                        # TODO: add supports for other kind of tasks.
+                        if task.kind == 'code_generation':
+                            result = self.gen_task_content(task)
+                            if result is None:
+                                self.console.log(""[red]Task failed. Aborting the chain."")
+                                return
+
+                        self.plan.current_task += 1
+                    self.update_project_state()
+
+                is_running = False",existing,5,False,True,False,False,True/False/False,1,False,False
+PaddlePaddle/PaddleNLP,DELETED,7712,paddlenlp/transformers/model_utils.py,"# TODO(wj-Mcat): load shard checkpoint weight file, refer to: https://github.com/huggingface/transformers/pull/16343","
+        # 3. resolve model_weight file
+        model_weight_file = cls._resolve_model_file_path(
+            pretrained_model_name_or_path, cache_dir=cache_dir)
+
+        # 4. loading the state dict
+        model_state_dict = paddle.load(model_weight_file,
+                                       return_numpy=load_state_as_np)
+
+        loaded_state_dict_keys = list(model_state_dict.keys())
+        # TODO(wj-Mcat): load shard checkpoint weight file, refer to: https://github.com/huggingface/transformers/pull/16343
+        model, missing_keys, unexpected_keys, mismatched_keys = cls._load_pretrained_model(
+            model=model,
+            state_dict=model_state_dict,
+            loaded_keys=loaded_state_dict_keys,
+            ignore_mismatched_sizes=ignore_mismatched_sizes,
+            dtype=dtype)
+
+        if len(unexpected_keys) > 0:
+            logger.warning(
+                f""Some weights of the model checkpoint at {pretrained_model_name_or_path} were not used when""",existing,57,True,False,True,False,False/True/False,1,False,False
+pydantic/pydantic-ai,DELETED,515,pydantic_ai_slim/pydantic_ai/models/mistral.py,# TODO(Marcelo): We should add an integration test with VCR when I get the API key.,"            api_key: The API key to use for authentication, if unset uses `MISTRAL_API_KEY` environment variable.
+            client: An existing `Mistral` client to use, if provided, `api_key` and `http_client` must be `None`.
+            http_client: An existing `httpx.AsyncClient` to use for making HTTP requests.
+            json_mode_schema_prompt: The prompt to show when the model expects a JSON object as input.
+        """"""
+        self._model_name = model_name
+        self.json_mode_schema_prompt = json_mode_schema_prompt
+
+        if provider is not None:
+            if isinstance(provider, str):
+                # TODO(Marcelo): We should add an integration test with VCR when I get the API key.
+                provider = infer_provider(provider)  # pragma: no cover
+            self.client = provider.client
+        elif client is not None:
+            assert http_client is None, 'Cannot provide both `mistral_client` and `http_client`'
+            assert api_key is None, 'Cannot provide both `mistral_client` and `api_key`'
+            self.client = client
+        else:
+            api_key = api_key or os.getenv('MISTRAL_API_KEY')
+            self.client = Mistral(api_key=api_key, async_client=http_client or cached_async_http_client())
+",existing,31,True,True,True,False,True/True/False,2,True,False
+chatsci/Aeiva,DELETED,866,src/aeiva/action/action_system.py,# TODO: move this function to elsewhere,"from aeiva.action.plan import Plan
+from aeiva.action.skill import Skill
+from aeiva.action.task import Task
+from aeiva.action.action import Action
+import asyncio
+
+import os
+import json
+
+# Load tool schema from JSON files
+# TODO: move this function to elsewhere
+def load_tool_schema(api_name):
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    # Adjust the project root as necessary
+    project_root = os.path.abspath(os.path.join(current_path, ""../../..""))
+    path = os.path.join(
+        project_root,
+        f""src/aeiva/action/tool/api/function/{api_name}/{api_name}.json"",
+    )
+    with open(path, ""r"") as file:
+        return json.load(file)",existing,52,False,False,False,True,False/False/True,1,False,False
+LongxingTan/open-retrievals,DELETED,394,src/retrievals/trainer/custom_trainer.py,# TODO: remove the loss_fn while save weights,"
+                vec = self.model(inputs)
+                if isinstance(vec, dict):
+                    vec = vec[""embeddings""]
+                vectors.append(vec.detach().cpu().numpy())
+
+        V = np.concatenate(vectors)
+        return V
+
+    def save_state(self, output_dir: Optional[str] = None):
+        # TODO: remove the loss_fn while save weights
+        if not output_dir:
+            output_dir = ""./model.pth""
+        torch.save(self.model.state_dict(), output_dir)
+
+    def save_model(self, output_dir: Optional[str] = None, state_dict=None):
+        pass
+
+
+class AverageMeter(object):
+    """"""Computes and stores the average and current value""""""",existing,50,False,False,True,False,False/True/False,1,False,False
+joslefaure/HERMES,ACTIVE,3,lavis/common/config.py,# [TODO] validate the model/dataset configuration,"        user_config = self._build_opt_list(self.args.options)
+
+        config = OmegaConf.load(self.args.cfg_path)
+
+        runner_config = self.build_runner_config(config)
+        model_config = self.build_model_config(config, **user_config)
+        dataset_config = self.build_dataset_config(config)
+
+        # Validate the user-provided runner configuration
+        # model and dataset configuration are supposed to be validated by the respective classes
+        # [TODO] validate the model/dataset configuration
+        # self._validate_runner_config(runner_config)
+
+        # Override the default configuration with user options.
+        self.config = OmegaConf.merge(
+            runner_config, model_config, dataset_config, user_config
+        )
+
+    def _validate_runner_config(self, runner_config):
+        """"""
+        This method validates the configuration, such that",new_random_unique,70,False,False,True,False,False/True/False,1,False,False
